@@ -5,18 +5,37 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/viper"
 )
 
 func main() {
-	// Set up configuration
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./configs")
-	err := viper.ReadInConfig()
+	// Determine the configuration file path based on the binary name
+	executable, err := os.Executable()
 	if err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+		log.Fatalf("Could not determine executable path: %s\n", err)
+	}
+	binaryName := filepath.Base(executable)
+
+	var configPath string
+	if strings.HasSuffix(binaryName, ".out") {
+		configPath = "./configs/config.yaml"
+	} else {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			log.Fatalf("Could not determine home directory: %s\n", err)
+		}
+		configPath = filepath.Join(homeDir, ".af.yaml")
+	}
+
+	// Set up configuration
+	viper.SetConfigFile(configPath)
+	err = viper.ReadInConfig()
+	if err != nil {
+		log.Fatalf("Error reading config file (%s): %s", configPath, err)
 	}
 
 	// Get the port from the config file
