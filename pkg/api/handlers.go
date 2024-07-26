@@ -5,14 +5,14 @@ import (
 	"net/http"
 )
 
-// HelloResponse represents the JSON response structure.
-type HelloResponse struct {
+// PingResponse represents the JSON response structure for the ping endpoint.
+type PingResponse struct {
 	Message string `json:"message"`
 }
 
-// HelloHandler is a basic handler that returns a hello message.
-func HelloHandler(w http.ResponseWriter, r *http.Request) {
-	response := HelloResponse{Message: "Hello, World!"}
+// PingHandler handles requests to the /api/ping endpoint.
+func PingHandler(w http.ResponseWriter, r *http.Request) {
+	response := PingResponse{Message: "pong"}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
