@@ -13,6 +13,9 @@ func SetupRouter() *mux.Router {
 	// Apply the rate limit middleware to all routes
 	router.Use(api.RateLimitMiddleware)
 
+	// Define the routes
 	router.HandleFunc("/api/ping", api.PingHandler).Methods("GET")
+	router.HandleFunc("/api/firmware", api.FirmwareHandler).Methods("GET")
+
 	return router
 }
